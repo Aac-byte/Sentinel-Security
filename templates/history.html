@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Scan History | Sentinel Security</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>📜 Scan History</h1>
+
+    <p class="subtitle">
+        View all previously scanned files and their malware detection results.
+    </p>
+
+    <!-- Statistics -->
+    <div class="history-cards">
+
+        <div class="history-card">
+            <h3>Total Scans</h3>
+            <h2>{{ total_scans }}</h2>
+        </div>
+
+        <div class="history-card">
+            <h3>Malware</h3>
+            <h2>{{ malware_count }}</h2>
+        </div>
+
+        <div class="history-card">
+            <h3>Safe</h3>
+            <h2>{{ safe_count }}</h2>
+        </div>
+
+        <div class="history-card">
+            <h3>Last Scan</h3>
+            <p>{{ last_scan }}</p>
+        </div>
+
+    </div>
+
+    <br>
+
+    <!-- Search -->
+    <form action="/history" method="GET">
+
+        <input
+            type="text"
+            name="search"
+            placeholder="🔍 Search by file name..."
+            value="{{ search }}"
+            class="search-box">
+
+        <br><br>
+
+        <button type="submit">
+            🔍 Search History
+        </button>
+
+    </form>
+
+    <br>
+
+    <table>
+
+        <thead>
+
+        <tr>
+            <th>📄 File</th>
+            <th>🛡 Status</th>
+            <th>🦠 Threat</th>
+            <th>⚠ Risk</th>
+            <th>🕒 Scan Time</th>
+            <th>⚙ Action</th>
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% if history %}
+
+            {% for row in history %}
+
+            <tr>
+
+                <!-- File -->
+                <td>{{ row[1] }}</td>
+
+                <!-- Status -->
+                <td>
+
+                    {% if row[2] == "Malware" %}
+                        <span class="malware-status">🔴 Malware</span>
+                    {% else %}
+                        <span class="safe-status">🟢 Safe</span>
+                    {% endif %}
+
+                </td>
+
+                <!-- Threat -->
+                <td>{{ row[3] }}</td>
+
+                <!-- Risk -->
+                <td>
+
+                    {% if row[2] == "Safe" %}
+
+                        <span class="risk-low">🟢 Low</span>
+
+                    {% elif row[3] == "Trojan" %}
+
+                        <span class="risk-high">🟠 High</span>
+
+                    {% elif row[3] == "Spyware" %}
+
+                        <span class="risk-high">🟠 High</span>
+
+                    {% elif row[3] == "Ransomware" %}
+
+                        <span class="risk-critical">🔴 Critical</span>
+
+                    {% else %}
+
+                        <span class="risk-medium">🟡 Medium</span>
+
+                    {% endif %}
+
+                </td>
+
+                <!-- Scan Time -->
+                <td>{{ row[4] }}</td>
+
+                <!-- Action -->
+                <td class="action-buttons">
+
+                    <a href="/view-report/{{ row[0] }}" class="view-btn">
+                        👁 View
+                    </a>
+
+                    <a href="/delete-history/{{ row[0] }}"
+                       class="delete-btn"
+                       onclick="return confirm('Delete this scan record?');">
+                        🗑 Delete
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        {% else %}
+
+            <tr>
+
+                <td colspan="6">
+                    📂 No scan history available.
+                </td>
+
+            </tr>
+
+        {% endif %}
+
+        </tbody>
+
+    </table>
+
+    <br><br>
+
+    <a href="/clear-history"
+       onclick="return confirm('Delete all scan history?');">
+
+        <button style="background:#dc2626;">
+            🗑 Delete All History
+        </button>
+
+    </a>
+
+    <br><br>
+
+    <a href="/">
+
+        <button>
+            🏠 Back to Home
+        </button>
+
+    </a>
+
+</div>
+
+</body>
+
+</html>

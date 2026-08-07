@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sentinel Malware Scanner</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- ================= HERO ================= -->
+
+<div class="hero">
+
+    <div class="hero-badge">
+
+        🛡 Sentinel Security v3.0
+
+    </div>
+
+    <h1>
+
+        Sentinel Malware Scanner
+
+    </h1>
+
+    <h3>
+
+        AI Powered Malware Detection using
+
+        <span>YARA Rules</span>
+
+    </h3>
+
+    <p>
+
+        Scan suspicious files, detect malware using YARA signatures,
+        analyze URLs, search threat intelligence and generate
+        professional security reports.
+
+    </p>
+
+</div>
+
+<!-- ================= DASHBOARD ================= -->
+
+<section>
+
+<h2 class="section-title">
+
+📊 Security Dashboard
+
+</h2>
+
+<div class="dashboard">
+
+<div class="card">
+
+<h2>{{ total_scans }}</h2>
+
+<h4>Total Scans</h4>
+
+<p>
+
+Total files scanned by Sentinel.
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>{{ malware_count }}</h2>
+
+<h4>Malware Found</h4>
+
+<p>
+
+Detected malicious files.
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>{{ safe_count }}</h2>
+
+<h4>Safe Files</h4>
+
+<p>
+
+Successfully verified files.
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>YARA</h2>
+
+<h4>Detection Engine</h4>
+
+<p>
+
+Rule-based malware detection.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= FILE SCANNER ================= -->
+
+<section class="upload-section">
+
+    <h2 class="section-title">
+
+        📂 Malware File Scanner
+
+    </h2>
+
+    <div class="upload-card">
+
+        <form action="/scan" method="POST" enctype="multipart/form-data">
+
+            <div class="drop-area" id="drop-area">
+
+                <div class="upload-icon">☁</div>
+
+                <h3>Drag & Drop File Here</h3>
+
+                <p>
+                    EXE • DLL • APK • ZIP • PDF • DOCX • JPG • PNG • TXT
+                </p>
+
+                <input
+                    type="file"
+                    id="fileElem"
+                    name="file"
+                    required>
+
+            </div>
+
+            <p id="file-name"></p>
+
+            <br>
+
+            <button type="submit" class="scan-btn">
+
+                🛡 Start Malware Scan
+
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+<!-- ================= QUICK ACTIONS ================= -->
+
+<section>
+
+    <h2 class="section-title">
+
+        ⚡ Quick Actions
+
+    </h2>
+
+    <div class="dashboard">
+
+        <a href="/url">
+
+            <div class="card">
+
+                <h2>🌐</h2>
+
+                <h4>URL Scanner</h4>
+
+                <p>
+
+                    Analyze suspicious websites.
+
+                </p>
+
+            </div>
+
+        </a>
+
+        <a href="/search">
+
+            <div class="card">
+
+                <h2>🔍</h2>
+
+                <h4>Threat Search</h4>
+
+                <p>
+
+                    Search files, hashes, domains and malware.
+
+                </p>
+
+            </div>
+
+        </a>
+
+        <a href="/history">
+
+            <div class="card">
+
+                <h2>📜</h2>
+
+                <h4>Scan History</h4>
+
+                <p>
+
+                    View previous scan reports.
+
+                </p>
+
+            </div>
+
+        </a>
+
+        <a href="/download-report">
+
+            <div class="card">
+
+                <h2>📄</h2>
+
+                <h4>PDF Report</h4>
+
+                <p>
+
+                    Download the latest scan report.
+
+                </p>
+
+            </div>
+
+        </a>
+
+    </div>
+
+</section>
+
+<!-- ================= WHY CHOOSE SENTINEL ================= -->
+
+<section>
+
+    <h2 class="section-title">
+
+        ⭐ Why Choose Sentinel?
+
+    </h2>
+
+    <div class="dashboard">
+
+        <div class="card">
+
+            <h2>⚡</h2>
+
+            <h4>Fast Scanning</h4>
+
+            <p>
+
+                Scan files within seconds using optimized detection.
+
+            </p>
+
+        </div>
+
+        <div class="card">
+
+            <h2>🛡</h2>
+
+            <h4>YARA Detection</h4>
+
+            <p>
+
+                Detect malware using custom YARA rule signatures.
+
+            </p>
+
+        </div>
+
+        <div class="card">
+
+            <h2>🔐</h2>
+
+            <h4>Hash Generation</h4>
+
+            <p>
+
+                Automatically generate MD5 and SHA256 hashes.
+
+            </p>
+
+        </div>
+
+        <div class="card">
+
+            <h2>📄</h2>
+
+            <h4>Professional Reports</h4>
+
+            <p>
+
+                Download complete PDF reports anytime.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <hr>
+
+    <p>
+
+        🛡 Sentinel Malware Scanner v3.0
+
+    </p>
+
+    <p>
+
+        AI Powered Malware Detection using YARA Rules
+
+    </p>
+
+    <p>
+
+        Developed using Flask • Python • SQLite • ReportLab • YARA
+
+    </p>
+
+</footer>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>

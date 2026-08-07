@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>View Report | Sentinel Security
+    </title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🛡 Sentinel Security
+    </h1>
+
+    <p class="subtitle">
+        Detailed Malware Scan Report
+    </p>
+
+    {% if report[4] == "Malware" %}
+
+        <div class="status malware">
+            ❌ Malware Detected
+        </div>
+
+    {% else %}
+
+        <div class="status safe">
+            ✅ File is Safe
+        </div>
+
+    {% endif %}
+
+    <br>
+
+    <div class="dashboard">
+
+        <div class="card">
+            <h2>📄</h2>
+            <p><b>File Name</b></p>
+            <p>{{ report[0] }}</p>
+        </div>
+
+        <div class="card">
+            <h2>📦</h2>
+            <p><b>File Size</b></p>
+            <p>{{ report[1] }} Bytes</p>
+        </div>
+
+        <div class="card">
+            <h2>🕒</h2>
+            <p><b>Scan Time</b></p>
+            <p>{{ report[6] }}</p>
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="info-box">
+
+        <h3>🔐 MD5 Hash</h3>
+
+        <div class="hash-box">
+            {{ report[2] }}
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="info-box">
+
+        <h3>🔒 SHA256 Hash</h3>
+
+        <div class="hash-box">
+            {{ report[3] }}
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="dashboard">
+
+        <div class="card">
+
+            <h2>🛡</h2>
+
+            <p><b>Status</b></p>
+
+            {% if report[4] == "Malware" %}
+
+                <p style="color:#ef4444;font-weight:bold;">
+                    Malware
+                </p>
+
+            {% else %}
+
+                <p style="color:#22c55e;font-weight:bold;">
+                    Safe
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        <div class="card">
+
+            <h2>📜</h2>
+
+            <p><b>Matched Rule</b></p>
+
+            {% if report[5] %}
+
+                <p>{{ report[5] }}</p>
+
+            {% else %}
+
+                <p>No Rule Matched</p>
+
+            {% endif %}
+
+        </div>
+
+        <div class="card">
+
+            <h2>⚠</h2>
+
+            <p><b>Risk Level</b></p>
+
+            {% if report[4] == "Malware" %}
+
+                <p style="color:#ef4444;font-weight:bold;">
+                    High Risk
+                </p>
+
+            {% else %}
+
+                <p style="color:#22c55e;font-weight:bold;">
+                    Low Risk
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="info-box">
+
+        <h3>💡 Recommendation</h3>
+
+        {% if report[4] == "Malware" %}
+
+        <p>
+            This file appears malicious. Do not execute it.
+            Delete or quarantine the file immediately and perform a complete system scan.
+        </p>
+
+        {% else %}
+
+        <p>
+            No malware signature was detected.
+            Always scan downloaded files before opening them.
+        </p>
+
+        {% endif %}
+
+    </div>
+
+    <br>
+
+    <div class="button-group">
+
+    
+       <a href="{{ url_for('download_report', scan_id=scan_id) }}">
+    <button>
+        📄 Download PDF Report
+    </button>
+      </a>
+        
+
+        <a href="/history">
+            <button>
+                📜 Back to History
+            </button>
+        </a>
+
+        <a href="/">
+            <button>
+                🏠 Home
+            </button>
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

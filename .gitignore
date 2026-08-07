@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.pyc
+
+# Database
+scanner.db
+
+# Uploads & Reports
+uploads/
+reports/
+
+# ZIP files
+*.zip
+
+# PDF files
+*.pdf
+
+# EXE files
+*.exe
+
+# Videos
+*.mp4
+
+# Images
+*.png
+*.jpg
+*.jpeg
+
+# Word files
+*.docx
+
+# Text files
+*.txt
+
+# R History
+.Rhistory
+.RData

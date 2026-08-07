@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Threat Search | Sentinel Security</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🛡 Threat Intelligence Lookup</h1>
+
+    <p class="subtitle">
+        Search file names, malware hashes, IP addresses, domains or threat keywords
+        to quickly identify and analyze security artifacts.
+    </p>
+
+    <br>
+
+    <form action="/search" method="POST">
+
+        <input
+            type="search"
+            id="query"
+            name="query"
+            class="search-box"
+            placeholder="Search file, hash, IP address, domain or threat..."
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+            required
+        >
+
+        <br><br>
+
+        <button type="submit">
+            🔎 Analyze Query
+        </button>
+
+    </form>
+
+    <br><br>
+
+    <h2 class="section-title">⚡ Supported Search Types</h2>
+
+    <div class="dashboard">
+
+        <div class="card">
+
+            <h2>📄</h2>
+
+            <h4>File</h4>
+
+            <p>
+                EXE, DLL, APK, ZIP, PDF, DOCX and more.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>🔐</h2>
+
+            <h4>Hash</h4>
+
+            <p>
+                MD5, SHA1 and SHA256 hashes.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>🌐</h2>
+
+            <h4>IP Address</h4>
+
+            <p>
+                Analyze IPv4 addresses using threat intelligence.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>🌍</h2>
+
+            <h4>Domain</h4>
+
+            <p>
+                Analyze domain names and reputation.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>🛡</h2>
+
+            <h4>Threat</h4>
+
+            <p>
+                Malware names and threat keywords.
+            </p>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="button-group">
+
+        <a href="/">
+
+            <button>
+                🏠 Home
+            </button>
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const input = document.getElementById("query");
+
+if (input) {
+
+    input.addEventListener("input", function () {
+
+        const pos = this.value.length;
+
+        this.setSelectionRange(pos, pos);
+
+    });
+
+}
+
+</script>
+
+</body>
+
+</html>
