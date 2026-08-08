@@ -13,6 +13,7 @@ import re
 from virustotal import scan_url_virustotal
 from reportlab.lib.pagesizes import A4
 from download_report import register_download_route
+from flask import Flask, render_template, request, send_file, redirect, session
 
 from virustotal import (
     scan_url_virustotal,
@@ -22,6 +23,12 @@ from virustotal import (
 )
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", os.urandom(32))
+@app.before_request
+def create_session():
+    if "session_id" not in session:
+        session["session_id"] = os.urandom(16).hex()
+
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
@@ -49,6 +56,7 @@ cursor.execute("""
 CREATE TABLE IF NOT EXISTS scan_history (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     file_name TEXT NOT NULL,
+    session_id TEXT,
     file_size INTEGER,
     md5 TEXT,
     sha256 TEXT,
@@ -69,15 +77,24 @@ def home():
     cursor = conn.cursor()
 
     # Total Scans
-    cursor.execute("SELECT COUNT(*) FROM scan_history")
+    cursor.execute(
+    "SELECT COUNT(*) FROM scan_history WHERE session_id = ?",
+    (session.get("session_id"),)
+    )
     total_scans = cursor.fetchone()[0]
 
     # Malware Files
-    cursor.execute("SELECT COUNT(*) FROM scan_history WHERE status='Malware'")
+    cursor.execute(
+    "SELECT COUNT(*) FROM scan_history WHERE session_id = ? AND status='Malware'",
+    (session.get("session_id"),)
+    )
     malware_count = cursor.fetchone()[0]
 
     # Safe Files
-    cursor.execute("SELECT COUNT(*) FROM scan_history WHERE status='Safe'")
+    cursor.execute(
+    "SELECT COUNT(*) FROM scan_history WHERE session_id = ? AND status='Safe'",
+    (session.get("session_id"),)
+    )
     safe_count = cursor.fetchone()[0]
 
     conn.close()
@@ -102,41 +119,60 @@ def history():
     cursor = conn.cursor()
 
     if search:
-        cursor.execute("""
-            SELECT id, file_name, status, rule, scan_time
-            FROM scan_history
-            WHERE file_name LIKE ?
-            ORDER BY id DESC
-        """, ('%' + search + '%',))
+      cursor.execute("""
+        SELECT id, file_name, status, rule, scan_time
+        FROM scan_history
+        WHERE session_id = ?
+        AND file_name LIKE ?
+        ORDER BY id DESC
+        """, (
+        session.get("session_id"),
+        '%' + search + '%'
+        ))
     else:
-        cursor.execute("""
-            SELECT id, file_name, status, rule, scan_time
-            FROM scan_history
-            ORDER BY id DESC
-        """)
+      cursor.execute("""
+        SELECT id, file_name, status, rule, scan_time
+        FROM scan_history
+        WHERE session_id = ?
+        ORDER BY id DESC
+        """, (
+        session.get("session_id"),
+        ))
 
     history = cursor.fetchall()
     print("History Data:", history)
 
     # Total Scans
-    cursor.execute("SELECT COUNT(*) FROM scan_history")
+    cursor.execute(
+     "SELECT COUNT(*) FROM scan_history WHERE session_id = ?",
+     (session.get("session_id"),)
+    )
     total_scans = cursor.fetchone()[0]
 
 # Malware Count
-    cursor.execute("SELECT COUNT(*) FROM scan_history WHERE status='Malware'")
+    cursor.execute(
+    "SELECT COUNT(*) FROM scan_history WHERE session_id = ? AND status='Malware'",
+    (session.get("session_id"),)
+    )
     malware_count = cursor.fetchone()[0]
 
 # Safe Count
-    cursor.execute("SELECT COUNT(*) FROM scan_history WHERE status='Safe'")
+    cursor.execute(
+    "SELECT COUNT(*) FROM scan_history WHERE session_id = ? AND status='Safe'",
+    (session.get("session_id"),)
+    )
     safe_count = cursor.fetchone()[0]
 
      # Last Scan Time
     cursor.execute("""
     SELECT scan_time
     FROM scan_history
+    WHERE session_id = ?
     ORDER BY id DESC
     LIMIT 1
-    """)
+    """, (
+    session.get("session_id"),
+    )) 
 
     last_scan = cursor.fetchone()
 
@@ -164,10 +200,9 @@ def delete_history(history_id):
     cursor = conn.cursor()
 
     cursor.execute(
-        "DELETE FROM scan_history WHERE id=?",
-        (history_id,)
+    "DELETE FROM scan_history WHERE id=? AND session_id=?",
+    (history_id, session.get("session_id"))
     )
-
     conn.commit()
     conn.close()
 
@@ -179,7 +214,10 @@ def clear_history():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    cursor.execute("DELETE FROM scan_history")
+    cursor.execute(
+    "DELETE FROM scan_history WHERE session_id=?",
+    (session.get("session_id"),)
+    )
 
     conn.commit()
     conn.close()
@@ -202,8 +240,8 @@ def view_report(scan_id):
             rule,
             scan_time
         FROM scan_history
-        WHERE id=?
-    """, (scan_id,))
+        WHERE id=? AND session_id=?
+    """, (scan_id, session.get("session_id")))
 
     report = cursor.fetchone()
 
@@ -1070,6 +1108,9 @@ def scan_url():
 @app.route("/scan", methods=["POST"])
 def scan():
 
+    if "session_id" not in session:
+        session["session_id"] = os.urandom(16).hex()
+
     file = request.files["file"]
 
     if file.filename == "":
@@ -1104,17 +1145,18 @@ def scan():
     cursor = conn.cursor()
 
     cursor.execute("""
-        INSERT INTO scan_history
-        (file_name, file_size, md5, sha256, status, rule, scan_time)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO scan_history
+    (session_id, file_name, file_size, md5, sha256, status, rule, scan_time)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """, (
-        file.filename,
-        file_size,
-        md5_hash,
-        sha256_hash,
-        status,
-        result,
-        scan_time
+    session.get("session_id"),
+    file.filename,
+    file_size,
+    md5_hash,
+    sha256_hash,
+    status,
+    result,
+    scan_time
     ))
 
     scan_id = cursor.lastrowid
