@@ -1,3 +1,3 @@
 
 import os
-VT_API_KEY = os.getenv("VT_API_KEY")
+VT_API_KEY = os.getenv("3966def3a5883dcf73ee76712722a43bd79b7b9d2b1c4db253b0ae498a563fd4")
