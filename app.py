@@ -41,6 +41,26 @@ conn.close()
 print(DB_PATH)
 print(os.path.exists(DB_PATH))
 
+# Create scan_history table if it does not exist
+conn = sqlite3.connect(DB_PATH)
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS scan_history (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    file_name TEXT NOT NULL,
+    file_size INTEGER,
+    md5 TEXT,
+    sha256 TEXT,
+    status TEXT,
+    rule TEXT,
+    scan_time TEXT
+)
+""")
+
+conn.commit()
+conn.close()
+
 
 @app.route("/")
 def home():
