@@ -1,0 +1,5 @@
+flask
+yara-python
+reportlab
+requests
+gunicorn
