@@ -2,7 +2,7 @@ import os
 import yara
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-RULE_PATH = os.path.join(BASE_DIR, "..", "rules", "test_rule.yara")
+RULE_PATH = os.path.join(BASE_DIR, "rules", "test_rule.yara")
 
 rules = yara.compile(filepath=RULE_PATH)
 
