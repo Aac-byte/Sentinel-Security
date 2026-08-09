@@ -950,44 +950,50 @@ def scan_url():
 
                 # Risk Score
         risk_score = 0
-        stats = vt_result["data"]["attributes"]["stats"]
         malicious = 0
         suspicious = 0
         harmless = 0
         undetected = 0
         detection_ratio = "0/0"
+                
+        # Check VirusTotal result safely
+        if vt_result and vt_result.get("data"):
 
-        if vt_result:
+          attributes = vt_result["data"].get("attributes", {})
+          stats = attributes.get("stats", {})
 
-            stats = vt_result["data"]["attributes"]["stats"]
-               
-        print("===== STATS =====")
-        print(stats)
-        print("Malicious =", stats.get("malicious"))
-        print("Suspicious =", stats.get("suspicious"))
+          print("===== STATS =====")
+          print(stats)
+          print("Malicious =", stats.get("malicious", 0))
+          print("Suspicious =", stats.get("suspicious", 0))
 
-        malicious = stats.get("malicious", 0)
-        suspicious = stats.get("suspicious", 0)
-        harmless = stats.get("harmless", 0)
-        undetected = stats.get("undetected", 0)
+          malicious = stats.get("malicious", 0)
+          suspicious = stats.get("suspicious", 0)
+          harmless = stats.get("harmless", 0)
+          undetected = stats.get("undetected", 0)
 
-        total_engines = malicious + suspicious + harmless + undetected
+          total_engines = malicious + suspicious + harmless + undetected
 
-        if total_engines > 0:
-                detection_ratio = f"{malicious}/{total_engines}"
+          if total_engines > 0:
+            detection_ratio = f"{malicious}/{total_engines}"
 
-                risk_score += malicious * 20
-                risk_score += suspicious * 10
+          risk_score += malicious * 20
+          risk_score += suspicious * 10
 
-                if risk_score > 100:
-                 risk_score = 100
+          if risk_score > 100:
+           risk_score = 100
 
-        # HTTPS
+        else:
+            print("VirusTotal data unavailable.")
+            detection_ratio = "Not Available"
+
+
+# HTTPS
         if protocol == "HTTPS":
-            https_status = "Secure"
+              https_status = "Secure"
         else:
             https_status = "Not Secure"
-            risk_score += 30
+            risk_score += 30      
 
         # URL Length
         if len(url) > 75:
