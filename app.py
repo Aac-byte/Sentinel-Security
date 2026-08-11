@@ -1029,6 +1029,7 @@ def scan_url():
             "bonus",
             "win",
             "password"
+            "phishing"
         ]
 
         found_keywords = []
