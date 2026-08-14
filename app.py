@@ -1028,7 +1028,7 @@ def scan_url():
             "gift",
             "bonus",
             "win",
-            "password"
+            "password",
             "phishing"
         ]
 
@@ -1046,15 +1046,20 @@ def scan_url():
             keyword_status = "None"
 
         # Threat Level
-        if risk_score <= 20:
-            threat_level = "Low"
+        if malicious > 0:
+          threat_level = "High"
 
-        elif risk_score <= 50:
-            threat_level = "Medium"
+        elif suspicious > 0:
+         threat_level = "Medium"
+
+        elif "phishing" in found_keywords or "verify" in found_keywords:
+         threat_level = "Medium"
+
+        elif risk_score >= 40:
+         threat_level = "Medium"
 
         else:
-            threat_level = "High"
-
+         threat_level = "Low"
         # Recommendation
         if threat_level == "Low":
 
